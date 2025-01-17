@@ -74,6 +74,10 @@ void StringColumnReader::read(std::shared_ptr<ByteBuffer> input, pixels::proto::
             elementIndex++;
         }
     } else {
+        std::cout << "not dictionary encoded" << std::endl;
+        std::cout << "size is " << size << std::endl;
+        //currentStart = 0;
+        //nextStart = startsBuf->getInt();
         for(int i = 0; i < size; i++) {
             if(elementIndex % pixelStride == 0) {
                 int pixelId = elementIndex / pixelStride;
@@ -84,7 +88,8 @@ void StringColumnReader::read(std::shared_ptr<ByteBuffer> input, pixels::proto::
                 currentStart = nextStart;
                 nextStart = startsBuf->getInt();
                 int len = nextStart - currentStart;
-                // use setRef instead of setVal to reduce memory copy
+                std::cout << "currentStart is " << currentStart << std::endl;
+                std::cout << "nextStart is " << nextStart << std::endl;
                 columnVector->setRef(
                         i + vectorIndex, contentBuf->getPointer(), bufferOffset, len);
                 bufferOffset += len;
@@ -161,7 +166,8 @@ void StringColumnReader::readContent(std::shared_ptr<ByteBuffer> input,
         // read strings
         contentBuf = std::make_shared<ByteBuffer>(*input, 0, startsOffset);
         startsBuf = std::make_shared<ByteBuffer>(
-                *input, startsOffset, inputLength - sizeof(int) - startsOffset);
+                *input, startsOffset, /*inputLength - sizeof(int) - startsOffset*/1024);
+        std::cout << "startsBuf length is " << inputLength - sizeof(int) - startsOffset << std::endl;
         nextStart = startsBuf->getInt(); // read out the first start offset, which is 0
     }
 }
