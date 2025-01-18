@@ -333,8 +333,6 @@ void PixelsScanFunction::TransformDuckdbChunk(PixelsReadLocalState & data,
 			    break;
 		    }
 
-			//        case TypeDescription::STRING:
-			//            break;
 			case TypeDescription::DATE:{
 			    auto dateCol = std::static_pointer_cast<DateColumnVector>(col);
                 Vector vector(LogicalType::DATE,
@@ -362,6 +360,7 @@ void PixelsScanFunction::TransformDuckdbChunk(PixelsReadLocalState & data,
 			//            break;
 			//        case TypeDescription::BINARY:
 			//            break;
+            case TypeDescription::STRING:
 			case TypeDescription::VARCHAR:
 			case TypeDescription::CHAR:
 		    {

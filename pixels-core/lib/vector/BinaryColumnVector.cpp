@@ -7,6 +7,7 @@
 BinaryColumnVector::BinaryColumnVector(uint64_t len, bool encoding): ColumnVector(len, encoding) {
     posix_memalign(reinterpret_cast<void **>(&vector), 32,
                    len * sizeof(duckdb::string_t));
+    str_vec.resize(len);
     memoryUsage += (long) sizeof(uint8_t) * len;
 }
 
@@ -25,7 +26,6 @@ void BinaryColumnVector::setRef(int elementNum, uint8_t * const &sourceBuf, int 
     this->vector[elementNum]
         = duckdb::string_t((char *)(sourceBuf + start), length);
 
-    std::cout << "When writing, at index " << elementNum << ", the value is " << vector[elementNum].GetData() << std::endl;
 
     // TODO: isNull should implemented, but not now.
 
@@ -64,15 +64,14 @@ void BinaryColumnVector::add(uint8_t *v,int len) {
     setVal(writeIndex++, v, 0, len);
 }
 
-void BinaryColumnVector::setVal(int elementNum, uint8_t *sourceBuf,int start,int length) {
+void BinaryColumnVector::setVal(int elementNum, uint8_t *sourceBuf, int start, int length) {
     /*if (elementNum >= writeIndex) {
         writeIndex = elementNum + 1;
     }*/
 
     vector[elementNum] = duckdb::string_t(reinterpret_cast<char *>(sourceBuf + start), length);
     isNull[elementNum] = false;
-    std::cout << "When reading, at index " << elementNum << ", the value is " << vector[elementNum].GetData() << std::endl;
-    str_vec.push_back(std::string(vector[elementNum].GetData()));
+    str_vec[elementNum] = std::string(reinterpret_cast<char*>(sourceBuf + start), length);
 }
 
 void BinaryColumnVector::ensureSize(uint64_t size, bool preserveData) {
@@ -80,6 +79,7 @@ void BinaryColumnVector::ensureSize(uint64_t size, bool preserveData) {
     if (length < size) {
         duckdb::string_t *oldVector = vector;
         posix_memalign(reinterpret_cast<void **>(&vector), 32, size * sizeof(duckdb::string_t));
+        str_vec.resize(size);
         if (preserveData) {
             std::copy(oldVector, oldVector + length, vector);
         }

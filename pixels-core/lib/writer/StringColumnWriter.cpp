@@ -64,7 +64,6 @@ int StringColumnWriter::write(std::shared_ptr<ColumnVector> vector, int length) 
             outputStream->putBytes((u_int8_t*)values[i].c_str(), str_size, startOffset);
             startsArray->add(startOffset);
             startOffset += str_size;
-            std::cout << "Str, len and offset: " << values[i] << " " << str_size << " " << startOffset << std::endl;
         }
 
         if (curPixelEleIndex >= pixelStride) {
@@ -93,7 +92,7 @@ int StringColumnWriter::write(std::shared_ptr<ColumnVector> vector, int length) 
     int curPartOffset = 0;
     int nextPartLength = length;
 
-    /*if (dictionaryEncoding) {
+    if (dictionaryEncoding) {
         // Process dictionary encoding case
         while ((curPixelIsNullIndex + nextPartLength) >= pixelStride) {
             curPartLength = pixelStride - curPixelIsNullIndex;
@@ -224,13 +223,11 @@ void StringColumnWriter::flush(){
 }
 
 void StringColumnWriter::flushStarts() {
-    //int startsFieldOffset=outputStream->size();
-    int startsFieldOffset = startOffset;
+    int startsFieldOffset = outputStream->getWritePos();
     startsArray->add(startOffset);
     if(byteOrder==ByteOrder::PIXELS_LITTLE_ENDIAN) {
         for (int i=0;i<startsArray->size();i++) {
             encodingUtils->writeIntLE(outputStream, startsArray->get(i));
-            std::cout << "StringColumnWriter::flushStarts: startOffset = " << startsArray->get(i) << std::endl;
         }
     }
     else {
@@ -241,8 +238,6 @@ void StringColumnWriter::flushStarts() {
     startsArray->clear();
     std::shared_ptr<ByteBuffer> offsetBuffer=std::make_shared<ByteBuffer>(4);
     offsetBuffer->putInt(startsFieldOffset);
-    //std::cout << "StringColumnWriter::flushStarts: startsFieldOffset = " << startsFieldOffset << std::endl;
-    //std::cout << "Bytes remaining " << outputStream->bytesRemaining() << std::endl;
     outputStream->putBytes(offsetBuffer->getPointer(), offsetBuffer->getWritePos());
 }
 
