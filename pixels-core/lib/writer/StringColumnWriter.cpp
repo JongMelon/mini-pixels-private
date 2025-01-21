@@ -54,10 +54,7 @@ int StringColumnWriter::write(std::shared_ptr<ColumnVector> vector, int length) 
 
         if (columnVector->isNull[i]) {
             hasNull = true;
-            if (nullsPadding) {
-                //outputStream->put(0);
-                std::cout << "Should not reach here" << std::endl;
-            }
+            startsArray->add(startOffset);
         }
         else {
             int str_size = values[i].size();

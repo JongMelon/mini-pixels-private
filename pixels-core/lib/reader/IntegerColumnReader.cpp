@@ -47,12 +47,14 @@ void IntegerColumnReader::read(std::shared_ptr<ByteBuffer> input, pixels::proto:
     } else {
         if(isLong) {
             // if long
-            std::memcpy((void*)columnVector->longVector + vectorIndex * sizeof(int64_t), input->getPointer() + input->getReadPos(), size * sizeof(int64_t));
+            if (vector->isValid[input->getReadPos()])
+                std::memcpy((void*)columnVector->longVector + vectorIndex * sizeof(int64_t), input->getPointer() + input->getReadPos(), size * sizeof(int64_t));
 			input->setReadPos(input->getReadPos() + size * sizeof(int64_t));
         } else {
             // if int
-            std::memcpy((void*)columnVector->intVector + vectorIndex * sizeof(int), input->getPointer() + input->getReadPos(), size * sizeof(int));
-			input->setReadPos(input->getReadPos() + size * sizeof(int));
+            if (vector->isValid[input->getReadPos()])
+                std::memcpy((void*)columnVector->intVector + vectorIndex * sizeof(int), input->getPointer() + input->getReadPos(), size * sizeof(int));
+			input->setReadPos(input->getReadPos() + size * sizeof(int)); 
         }
     }
 }

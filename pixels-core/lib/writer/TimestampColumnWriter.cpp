@@ -46,9 +46,7 @@ int TimestampColumnWriter::write(std::shared_ptr<ColumnVector> vector, int size)
 
         if (columnVector->isNull[i]) {
             hasNull = true;
-            if (nullsPadding) {
-                encodingUtils.writeLongLE(outputStream, 0L);
-            }
+            encodingUtils.writeLongLE(outputStream, 0L);
         }
         else {
             if (byteOrder == ByteOrder::PIXELS_LITTLE_ENDIAN) {
