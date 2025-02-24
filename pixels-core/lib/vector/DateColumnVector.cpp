@@ -9,12 +9,8 @@
 #include "vector/DateColumnVector.h"
 
 DateColumnVector::DateColumnVector(uint64_t len, bool encoding): ColumnVector(len, encoding) {
-	//if(encoding) {
-        posix_memalign(reinterpret_cast<void **>(&dates), 32,
-                       len * sizeof(int32_t));
-	/*} else {
-		this->dates = nullptr;
-	}*/
+    posix_memalign(reinterpret_cast<void **>(&dates), 32,
+                    len * sizeof(int32_t));
 	memoryUsage += (long) sizeof(int) * len;
 }
 

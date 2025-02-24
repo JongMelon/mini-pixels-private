@@ -65,10 +65,6 @@ void BinaryColumnVector::add(uint8_t *v,int len) {
 }
 
 void BinaryColumnVector::setVal(int elementNum, uint8_t *sourceBuf, int start, int length) {
-    /*if (elementNum >= writeIndex) {
-        writeIndex = elementNum + 1;
-    }*/
-
     vector[elementNum] = duckdb::string_t(reinterpret_cast<char *>(sourceBuf + start), length);
     isNull[elementNum] = false;
     str_vec[elementNum] = std::string(reinterpret_cast<char*>(sourceBuf + start), length);

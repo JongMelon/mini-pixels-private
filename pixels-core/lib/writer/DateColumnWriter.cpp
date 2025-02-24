@@ -29,7 +29,6 @@ ColumnWriter(type, writerOption)
 
 int DateColumnWriter::write(std::shared_ptr<ColumnVector> vector, int size)
 {
-    // std::cout<<"In DateColumnWriter"<<std::endl;
     auto columnVector = std::static_pointer_cast<DateColumnVector>(vector);
 
     if (!columnVector)

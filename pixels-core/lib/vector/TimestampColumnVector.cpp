@@ -14,12 +14,8 @@ TimestampColumnVector::TimestampColumnVector(int precision, bool encoding): Colu
 
 TimestampColumnVector::TimestampColumnVector(uint64_t len, int precision, bool encoding): ColumnVector(len, encoding) {
     this->precision = precision;
-    //if(encoding) {
-        posix_memalign(reinterpret_cast<void **>(&this->times), 64,
-                       len * sizeof(long));
-    /*} else {
-        this->times = nullptr;
-    }*/
+    posix_memalign(reinterpret_cast<void **>(&this->times), 64,
+                    len * sizeof(long));
 }
 
 
@@ -77,7 +73,7 @@ void TimestampColumnVector::add(std::string& value) {
     if(ss.fail()) {
         throw InvalidArgumentException("Invalid timestamp format");
     }
-    long ts = (std::mktime(&tm) + 28800) * 1e6;
+    long ts = (std::mktime(&tm)) * 1e6;
     add(ts);
 }
 
