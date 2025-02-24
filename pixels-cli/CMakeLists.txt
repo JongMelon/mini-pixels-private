@@ -80,5 +80,6 @@ add_executable(pixels-cli ${pixels_cli_cxx})
 include_directories(include)
 include_directories(../pixels-core/include)
 include_directories(../pixels-common/include)
+
 target_link_libraries(pixels-cli
         Boost::program_options Boost::regex duckdb)

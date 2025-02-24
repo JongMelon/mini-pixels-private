@@ -51,18 +51,21 @@ void IntegerColumnReader::read(std::shared_ptr<ByteBuffer> input,
             elementIndex++;
         }
     } else {
-        if (isLong) {
-            std::memcpy(reinterpret_cast<int64_t *>(columnVector->longVector) +
+        if(isLong) {
+            // if long
+            if (vector->isValid[input->getReadPos()])
+                std::memcpy(reinterpret_cast<int64_t *>(columnVector->longVector) +
                             vectorIndex,
                         input->getPointer() + input->getReadPos(),
                         size * sizeof(int64_t));
-            input->setReadPos(input->getReadPos() + size * sizeof(int64_t));
+			input->setReadPos(input->getReadPos() + size * sizeof(int64_t));
         } else {
             // if int
-            std::memcpy(
+            if (vector->isValid[input->getReadPos()])
+                std::memcpy(
                 reinterpret_cast<int *>(columnVector->intVector) + vectorIndex,
                 input->getPointer() + input->getReadPos(), size * sizeof(int));
-            input->setReadPos(input->getReadPos() + size * sizeof(int));
+			input->setReadPos(input->getReadPos() + size * sizeof(int)); 
         }
     }
 }
