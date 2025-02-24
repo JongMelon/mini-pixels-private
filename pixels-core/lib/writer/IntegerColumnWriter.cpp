@@ -41,7 +41,7 @@ int IntegerColumnWriter::write(std::shared_ptr<ColumnVector> vector, int size)
         throw std::invalid_argument("Invalid vector type");
     }
     long* values;
-    if(columnVector->isLongVectore()){
+    if(columnVector->isLongVector()){
       values=columnVector->longVector;
 
     }else {
@@ -165,7 +165,7 @@ void IntegerColumnWriter::newPixel()
     ColumnWriter::newPixel();
 }
 
-pixels::proto::ColumnEncoding IntegerColumnWriter::getColumnChunkEncoding()
+pixels::proto::ColumnEncoding IntegerColumnWriter::getColumnChunkEncoding() const
 {
     pixels::proto::ColumnEncoding columnEncoding;
     if (runlengthEncoding)
